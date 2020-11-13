@@ -1,0 +1,50 @@
+{% extends "base.html"%} {% block title%}Home{% endblock%} {% block content %}
+<div class="container-fluid mt-3">
+	<div class="jumbotron mx-4 bg-secondary text-white">
+		<h1 class="display-4">Stock Prediction</h1>
+		<p class="lead">
+			Enter the company name for which you want to predict the stock prices and
+			know when to buy and sell.
+		</p>
+		<hr />
+		<br />
+		<form>
+			<div class="row align-items-end">
+				<div class="col-5">
+					<div class="form-group">
+						<label for="exampleInputEmail1">Company Name</label>
+						<input
+							type="email"
+							class="form-control"
+							id="exampleInputEmail1"
+							aria-describedby="emailHelp"
+						/>
+					</div>
+				</div>
+				<div class="col-3">
+					<div class="form-group">
+						<label for="exampleInputEmail1">Investment amount</label>
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="basic-addon1">₹</span>
+							</div>
+							<input
+								type="text"
+								class="form-control"
+								placeholder=""
+								aria-label="Username"
+								aria-describedby="basic-addon1"
+							/>
+						</div>
+					</div>
+				</div>
+				<div class="col-2 mb-3">
+					<button type="button" class="btn btn-light text-success">
+						Submit
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock%}
