@@ -8,28 +8,30 @@
 		</p>
 		<hr />
 		<br />
-		<form>
+		<form method="POST">
 			<div class="row align-items-end">
 				<div class="col-5">
 					<div class="form-group">
-						<label for="exampleInputEmail1">Company Name</label>
+						<label>Company Name</label>
 						<input
-							type="email"
+							type="text"
+							name="company-name"
 							class="form-control"
-							id="exampleInputEmail1"
+							id="company-name-input"
 							aria-describedby="emailHelp"
 						/>
 					</div>
 				</div>
 				<div class="col-3">
 					<div class="form-group">
-						<label for="exampleInputEmail1">Investment amount</label>
+						<label>Investment amount</label>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
 								<span class="input-group-text" id="basic-addon1">₹</span>
 							</div>
 							<input
-								type="text"
+								type="number"
+								name="investment-amt"
 								class="form-control"
 								placeholder=""
 								aria-label="Username"
@@ -42,6 +44,7 @@
 					<button type="button" class="btn btn-light text-success">
 						Submit
 					</button>
+					<input type="submit" />
 				</div>
 			</div>
 		</form>
