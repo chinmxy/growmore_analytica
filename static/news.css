@@ -1,3 +1,61 @@
-.title {
-	color: #0f0;
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+
+body {
+	margin: 0;
+	padding: 0;
+}
+.feed-container {
+	font-size: 16px;
+	font-family: "Roboto", sans-serif;
+}
+.feed-container .header {
+	margin: 0px;
+	padding: 3px 3px 3px 3px;
+}
+.feed-container .footer {
+	display: none;
+	padding: 5px 5px 5px 5px;
+}
+.feed-container .content {
+	margin: 3px;
+	padding: 0 3px;
+}
+.feed-container .content .item {
+	margin: 0 0 7px 0;
+	padding: 7px 0 14px 0;
+	border-bottom: 1px solid #cccccc;
+}
+.feed-container .content .item .title {
+	color: #105289;
+	text-decoration: none;
+	font-weight: bold;
+}
+.feed-container .content .item .title a:link {
+	color: #105289;
+	text-decoration: none;
+}
+.feed-container .content .item .title a:visited {
+	color: #5a4860;
+	text-decoration: none;
+}
+.feed-container .content .item .title a:hover {
+	color: #bc2a4d;
+	text-decoration: none;
+}
+.feed-container .content .item .title a:active {
+	color: #105289;
+	text-decoration: none;
+}
+.feed-container .content .item .description a {
+	text-decoration: none;
+	color: #3399ff;
+}
+
+.feed-container .content .item .description {
+	font-size: 14px;
+}
+
+.feed-container .content .item .description a:hover {
+	text-decoration: underline;
+	color: #6699ff;
 }
