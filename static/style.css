@@ -3,3 +3,7 @@
 body {
 	font-family: "Roboto", sans-serif;
 }
+
+#header-logo-img :hover {
+	text-shadow: 0 0 3px #fff, 0 0 5px #fff;
+}
