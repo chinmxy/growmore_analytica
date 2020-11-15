@@ -1,2 +1,39 @@
-{% extends "base.html"%} {% block title%}Result{% endblock%} {% block content %}
-{% endblock %}
+{% extends "index.html" %}
+
+{% block title%}About{% endblock%} 
+
+{% block result %}
+
+<div class="col-md-6 offset-md-3 mt-5">
+    <div class="card">
+
+        <h3> Dynamic Chart</h3>
+        <canvas id="myChart"></canvas>
+
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+
+    var counts = JSON.parse("{{ xdata }}");
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'rgb(100, 200, 100)',
+                borderColor: 'rgb(0, 99, 132)',
+                data: counts
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+</script>
+{% endblock%}
