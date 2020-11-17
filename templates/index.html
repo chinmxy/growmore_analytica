@@ -1,15 +1,16 @@
 {% extends "base.html"%} {% block title%}Home{% endblock%} {% block content %}
+
 <div class="container-fluid mt-3">
-	<div class="jumbotron shadow mx-4 bg-dark text-white">
+	<div class="jumbotron shadow mx-4 bg-dark text-white" id = "jumb">
 		<h1 class="display-4">Stock Prediction</h1>
-		<p class="lead">
+		<p class="lead" >
 			Enter the company name for which you want to predict the stock prices and
 			know when to buy and sell.
 		</p>
 		<hr />
 		<br />
 		<form method="POST">
-			<div class="row align-items-end">
+			<div class="row align-items-end mx-1">
 				<div class="col-5">
 					<div class="form-group">
 						<label>Company Name</label>
@@ -19,6 +20,7 @@
 							class="form-control"
 							id="company-name-input"
 							aria-describedby="emailHelp"
+							required
 						/>
 					</div>
 				</div>
@@ -36,6 +38,7 @@
 								placeholder=""
 								aria-label="Username"
 								aria-describedby="basic-addon1"
+								required
 							/>
 						</div>
 					</div>
@@ -47,8 +50,8 @@
 				</div>
 			</div>
 		</form>
+		{% block result %} {% endblock %}
 	</div>
-	{% block result %} {% endblock %}
 
 </div>
 {% endblock%}

@@ -4,15 +4,17 @@
 
 {% block result %}
 
-<div class="col-md-6 offset-md-3 mt-5">
-    <div class="card">
-
-        <h3> Dynamic Chart</h3>
-        <canvas id="myChart"></canvas>
+<div class="col-md-12 mt-5" id = "chart-part">
+    <div class="card p-3 ">
+        <div class="card-body">
+            <h2 class="card-title text-dark" id="company">{{name}}</h2>
+        </div>    
+            <canvas id="myChart"></canvas>
 
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
 <script>
 
     var counts = JSON.parse("{{ xdata }}");

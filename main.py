@@ -12,8 +12,9 @@ def home():
 def accept_input():
     company_name = request.form['company-name']
     investment_amt = request.form['investment-amt']
-    print(company_name, investment_amt)
-    return render_template("result.html" , xdata = json.dumps(xdata))
+    company_name= company_name.title()
+    print(  company_name , investment_amt )
+    return render_template("result.html" , xdata = json.dumps(xdata), name= company_name )
     
 @app.route('/news')
 def news():
