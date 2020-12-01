@@ -1,6 +1,6 @@
 {% extends "base.html"%} {% block title%}Home{% endblock%} {% block content %}
 <div class="container-fluid mt-3">
-	<div class="jumbotron mx-4 bg-secondary text-white">
+	<div class="jumbotron shadow mx-4 bg-dark text-white">
 		<h1 class="display-4">Stock Prediction</h1>
 		<p class="lead">
 			Enter the company name for which you want to predict the stock prices and
@@ -41,13 +41,14 @@
 					</div>
 				</div>
 				<div class="col-2 mb-3">
-					<button type="button" class="btn btn-light text-success">
+					<button type="submit" class="btn btn-success">
 						Submit
 					</button>
-					<input type="submit" />
 				</div>
 			</div>
 		</form>
 	</div>
+	{% block result %} {% endblock %}
+
 </div>
 {% endblock%}

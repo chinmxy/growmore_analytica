@@ -1,2 +1,243 @@
-{% extends "base.html"%} {% block title%}Result{% endblock%} {% block content %}
-{% endblock %}
+{% extends "index.html" %}
+
+{% block title%}Result{% endblock%} 
+
+{% block result %}
+
+<style>
+    .inv {
+        display: none;
+    }
+
+    .vis {
+        display: block;
+    }
+</style>
+
+<div class="col-md-12 mt-5">
+    {% block javascript %}
+        <script>
+            var data = {{ model_response | tojson }};
+        </script>
+    {% endblock %}
+    <h2 style="color: #fff">Stock Name: {{ model_response['company_name'] }}</h2>
+    <select id="target" class="btn btn-success">
+        <option value="">Select Model...</option>
+        <option value="lstm">LSTM</option>
+        <option value="svr_lin">SVR-Linear</option>
+        <option value="svr_poly">SVR-Polynomial</option>
+        <option value="svr_rbf">SVR-Rbf</option>
+        <option value="rfr">Random Forest Regressor</option>
+        <option value="gbr">Gradient Boosting Regressor</option>
+    <select>
+    <div id="lstm" class="card mb-2 inv">
+        <canvas id="myChart1"></canvas>
+    </div>
+    <div id="svr_lin" class="card mb-2 inv">
+        <canvas id="myChart2"></canvas>
+    </div>
+    <div id="svr_poly" class="card mb-2 inv">
+        <canvas id="myChart3"></canvas>
+    </div>
+    <div id="svr_rbf" class="card mb-2 inv">
+        <canvas id="myChart4"></canvas>
+    </div>
+    <div id="rfr" class="card mb-2 inv">
+        <canvas id="myChart5"></canvas>
+    </div>
+    <div id="gbr" class="card mb-2 inv">
+        <canvas id="myChart6"></canvas>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+    var ctx1 = document.getElementById('myChart1').getContext('2d');
+    var chart1 = new Chart(ctx1, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: data.label,
+            datasets: [{
+                label: "Real values",
+                borderColor: 'rgb(102, 185, 51)',
+                data: data.real_valuesLSTM,
+                lineTension: 0,
+                fill: false
+            },
+            {
+                label: "Predicted Values",
+                borderColor: 'rgb(51, 133, 255)',
+                data: data.predicted_valuesLSTM,
+                lineTension: 0,
+                fill: false
+            }
+            ]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+    var ctx2 = document.getElementById('myChart2').getContext('2d');
+    var chart2 = new Chart(ctx2, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: data.label,
+            datasets: [{
+                label: "Real values",
+                borderColor: 'rgb(102, 185, 51)',
+                data: data.real_valuesML,
+                lineTension: 0,
+                fill: false
+            },
+            {
+                label: "Predicted Values",
+                borderColor: 'rgb(51, 133, 255)',
+                data: data.predicted_valuesSVR_Lin,
+                lineTension: 0,
+                fill: false
+            }
+            ]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+    var ctx3 = document.getElementById('myChart3').getContext('2d');
+    var chart3 = new Chart(ctx3, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: data.label,
+            datasets: [{
+                label: "Real values",
+                borderColor: 'rgb(102, 185, 51)',
+                data: data.real_valuesML,
+                lineTension: 0,
+                fill: false
+            },
+            {
+                label: "Predicted Values",
+                borderColor: 'rgb(51, 133, 255)',
+                data: data.predicted_valuesSVR_Poly,
+                lineTension: 0,
+                fill: false
+            }
+            ]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+    var ctx4 = document.getElementById('myChart4').getContext('2d');
+    var chart4 = new Chart(ctx4, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: data.label,
+            datasets: [{
+                label: "Real values",
+                borderColor: 'rgb(102, 185, 51)',
+                data: data.real_valuesML,
+                lineTension: 0,
+                fill: false
+            },
+            {
+                label: "Predicted Values",
+                borderColor: 'rgb(51, 133, 255)',
+                data: data.predicted_valuesSVR_Rbf,
+                lineTension: 0,
+                fill: false
+            }
+            ]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+    var ctx5 = document.getElementById('myChart5').getContext('2d');
+    var chart5 = new Chart(ctx5, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: data.label,
+            datasets: [{
+                label: "Real values",
+                borderColor: 'rgb(102, 185, 51)',
+                data: data.real_valuesML,
+                lineTension: 0,
+                fill: false
+            },
+            {
+                label: "Predicted Values",
+                borderColor: 'rgb(51, 133, 255)',
+                data: data.predicted_valuesRFR,
+                lineTension: 0,
+                fill: false
+            }
+            ]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+    var ctx6 = document.getElementById('myChart6').getContext('2d');
+    var chart6 = new Chart(ctx6, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: data.label,
+            datasets: [{
+                label: "Real values",
+                borderColor: 'rgb(102, 185, 51)',
+                data: data.real_valuesML,
+                lineTension: 0,
+                fill: false
+            },
+            {
+                label: "Predicted Values",
+                borderColor: 'rgb(51, 133, 255)',
+                data: data.predicted_valuesGBR,
+                lineTension: 0,
+                fill: false
+            }
+            ]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+
+    document
+    .getElementById('target')
+    .addEventListener('change', function () {
+        'use strict';
+        var vis = document.querySelector('.vis'),   
+        target = document.getElementById(this.value);
+        if (vis !== null) {
+        vis.className = 'inv';
+        }
+        if (target !== null ) {
+        target.className = 'vis';
+        }
+    });
+</script>
+{% endblock%}
