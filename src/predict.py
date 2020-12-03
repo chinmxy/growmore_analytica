@@ -21,9 +21,9 @@ import altair as alt
 import seaborn as sns
 import logging
 
-from trading_bot.trading_bot.agent import Agent
-from trading_bot.trading_bot.utils import show_eval_result, switch_k_backend_device, get_stock_data
-from trading_bot.trading_bot.methods import evaluate_model
+from .trading_bot.trading_bot.agent import Agent
+from .trading_bot.trading_bot.utils import show_eval_result, switch_k_backend_device, get_stock_data
+from .trading_bot.trading_bot.methods import evaluate_model
 
 def directional_asymmetry(y_hat, y_test):
   next_real = pd.Series(np.reshape(y_test, (y_test.shape[0]))).shift(-1)
@@ -231,6 +231,16 @@ def getBB(stock_close):
   return bbdata
 
 
+
+
+
+
+
+
+
+
+
+
 def visualize(df, history, title="trading session"):
     # add history to dataframe
     position = [history[0][0]] + [x[0] for x in history]
@@ -247,7 +257,7 @@ def visualize(df, history, title="trading session"):
         opacity=0.5
     ).encode(
         x='date:T',
-        y=alt.Y('position', axis=alt.Axis(format='$.2f', title='Price'), scale=scale)
+        y=alt.Y('position', axis=alt.Axis(format='₹.2f', title='Price'), scale=scale)
     ).interactive(
         bind_y=False
     )
@@ -259,14 +269,58 @@ def visualize(df, history, title="trading session"):
         filled=True
     ).encode(
         x=alt.X('date:T', axis=alt.Axis(title='Date')),
-        y=alt.Y('position', axis=alt.Axis(format='$.2f', title='Price'), scale=scale),
+        y=alt.Y('position', axis=alt.Axis(format='₹.2f', title='Price'), scale=scale),
         color='action'
     ).interactive(bind_y=False)
 
     # merge the two charts
     chart = alt.layer(actual, points, title=title).properties(height=300, width=1000)
-    
     return chart
+    
+
+
+
+
+
+
+
+
+
+
+def getChart(stock, model):
+    os.chdir("C:\\Users\\ethan\\Projects\\growmore_analytics_flask\\src\\trading_bot\\data")
+
+    model_name = 'model_t-dqn_GOOG_10'
+    test_stock = stock+'_'+model+'.csv'
+    window_size = 10
+    debug = True
+
+    agent = Agent(window_size, pretrained=True, model_name=model_name)
+
+    df = pd.read_csv(test_stock)
+    df = df[['Date', 'Adj Close']]
+    df = df.rename(columns={'Adj Close': 'actual', 'Date': 'date'})
+    dates = df['date']
+    dates = pd.to_datetime(dates, infer_datetime_format=True)
+    df['date'] = dates
+
+    switch_k_backend_device()
+
+    test_data = get_stock_data(test_stock)
+    initial_offset = test_data[1] - test_data[0]
+
+    test_result, history = evaluate_model(agent, test_data, window_size, debug)
+    show_eval_result(model_name, test_result, initial_offset)
+
+    chart = visualize(df, history, title=model)
+    return chart.to_json()
+
+
+
+
+
+
+
 
 
 def predict_prices(stock_name):
@@ -475,38 +529,8 @@ def predict_prices(stock_name):
     rfr_pred.to_csv(stock_name+'_RFR.csv')
     gbr_pred.to_csv(stock_name+'_GBR.csv')
 
-    plots = [None] * 6
-    index = 0
-    for model in ['LSTM', 'SVR_Lin', 'SVR_Poly', 'SVR_Rbf', 'RFR', 'GBR']:
 
-        model_name = 'model_double-dqn_GOOG_50'
-        test_stock = '/trading_bot/data/'+stock_name+'_'+model+'.csv'
-        window_size = 10
-        debug = True
-
-        agent = Agent(window_size, pretrained=True, model_name=model_name)
-
-        df = pd.read_csv(test_stock)
-        df = df[['Date', 'Adj Close']]
-        df = df.rename(columns={'Adj Close': 'actual', 'Date': 'date'})
-        dates = df['date']
-        dates = pd.to_datetime(dates, infer_datetime_format=True)
-        df['date'] = dates
-
-        switch_k_backend_device()
-
-        test_data = get_stock_data(test_stock)
-        initial_offset = test_data[1] - test_data[0]
-
-        test_result, history = evaluate_model(agent, test_data, window_size, debug)
-        show_eval_result(model_name, test_result, initial_offset)
-
-        chart = visualize(df, history, title=model)
-        plots[index] = chart.to_json()
-        index += 1
-
-
-    return y_test, y_testLSTM, y_hatLSTM[1:], y_hat_lin[1:], y_hat_poly[1:], y_hat_rbf[1:], y_hat_rfr[1:], y_hat_gbr[1:], plots[0], plots[1], plots[2], plots[3], plots[4], plots[5]
+    return y_test, y_testLSTM, y_hatLSTM[1:], y_hat_lin[1:], y_hat_poly[1:], y_hat_rbf[1:], y_hat_rfr[1:], y_hat_gbr[1:]
 
     # MSE_rbf = mean_squared_error(y_hat_rbf, y_test)
     # MSE_poly = mean_squared_error(y_hat_poly, y_test)

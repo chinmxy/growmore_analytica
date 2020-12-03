@@ -74,6 +74,13 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-tooltip@0.16.0/build/vega-tooltip.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://vega.github.io/datalib/datalib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega@5.17.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@4.17.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.12.2"></script>
 <script>
     var ctx1 = document.getElementById('myChart1').getContext('2d');
     var chart1 = new Chart(ctx1, {
@@ -254,42 +261,36 @@
     .getElementById('target')
     .addEventListener('change', function () {
         'use strict';
-        var vis = document.querySelector('.vis'),   
-        target1 = document.getElementById(this.value);
-        target2 = document.getElementById(this.value+ "_trade");
+        var vis = document.querySelectorAll('.vis'),   
+        target1 = document.getElementById(this.value),
+        target2 = document.getElementById(this.value+ "_trade")
         if (vis !== null) {
-        vis.className = 'inv';
+            vis.forEach(curr => curr.className = 'inv');
         }
         if (target1 !== null ) {
             target1.className = 'vis';
-        }
-        if (target2 !== null) {
             target2.className = 'vis';
         }
     });
 
     function parse(url, div) {
-    var opt = { mode: "vega-lite",
-        renderer: "svg",
-        actions: { export: true, source: false, editor: false }
+        var opt = {
+          mode: "vega-lite",
+          renderer: "svg",
+          actions: {export: true, source: false, editor: false}
         };
-    vegaEmbed("#" + div, url, opt, function (error, result) {
-    vegaTooltip.vegaLite(result.view, url);
-    });
+        vegaEmbed("#" + div, url, opt, function(error, result) {
+          // result.view is the Vega View, url is the original Vega-Lite specification
+          vegaTooltip.vegaLite(result.view, url);
+        });
     }
     //Parse your Json variable here
-    parse(data.trade_lstm, "lstm_trade")
-    parse(data.trade_lin, "svr_lin_trade")
-    parse(data.trade_poly, "svr_poly_trade")
-    parse(data.trade_rbf, "svr_rbf_trade")
-    parse(data.trade_rfr, "rfr_trade")
-    parse(data.trade_gbr, "gbr_trade")
+    parse("/"+data.company_name+"/LSTM", "lstm_trade")
+    parse("/"+data.company_name+"/SVR_Lin", "svr_lin_trade")
+    parse("/"+data.company_name+"/SVR_Poly", "svr_poly_trade")
+    parse("/"+data.company_name+"/SVR_Rbf", "svr_rbf_trade")
+    parse("/"+data.company_name+"/RFR", "rfr_trade")
+    parse("/"+data.company_name+"/GBR", "gbr_trade")
 
 </script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vega-tooltip@0.16.0/build/vega-tooltip.min.js"></script>
-<script src="https://d3js.org/d3.v3.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vega@4"></script><script src="https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc12"></script><script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script><script src="https://vega.github.io/datalib/datalib.min.js"></script>
 {% endblock%}
