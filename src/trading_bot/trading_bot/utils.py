@@ -5,7 +5,7 @@ import logging
 import pandas as pd
 import numpy as np
 
-import keras.backend as K
+import tensorflow.keras.backend as K
 
 
 # Formats Position
@@ -40,7 +40,7 @@ def get_stock_data(stock_file):
     """Reads stock data from csv file
     """
     df = pd.read_csv(stock_file)
-    return list(df['Adj Close'])
+    return list(df['stock_close'])
 
 
 def switch_k_backend_device():

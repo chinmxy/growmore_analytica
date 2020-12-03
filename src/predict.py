@@ -3,7 +3,7 @@ import talib
 
 import warnings
 warnings.filterwarnings("ignore")
-
+import sys
 import os
 import math
 import pandas as pd
@@ -17,8 +17,13 @@ from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+import altair as alt
+import seaborn as sns
+import logging
 
-
+from trading_bot.trading_bot.agent import Agent
+from trading_bot.trading_bot.utils import show_eval_result, switch_k_backend_device, get_stock_data
+from trading_bot.trading_bot.methods import evaluate_model
 
 def directional_asymmetry(y_hat, y_test):
   next_real = pd.Series(np.reshape(y_test, (y_test.shape[0]))).shift(-1)
@@ -226,9 +231,46 @@ def getBB(stock_close):
   return bbdata
 
 
+def visualize(df, history, title="trading session"):
+    # add history to dataframe
+    position = [history[0][0]] + [x[0] for x in history]
+    actions = ['HOLD'] + [x[1] for x in history]
+    df['position'] = position
+    df['action'] = actions
+    
+    # specify y-axis scale for stock prices
+    scale = alt.Scale(domain=(min(min(df['actual']), min(df['position'])) - 50, max(max(df['actual']), max(df['position'])) + 50), clamp=True)
+    
+    # plot a line chart for stock positions
+    actual = alt.Chart(df).mark_line(
+        color='green',
+        opacity=0.5
+    ).encode(
+        x='date:T',
+        y=alt.Y('position', axis=alt.Axis(format='$.2f', title='Price'), scale=scale)
+    ).interactive(
+        bind_y=False
+    )
+    
+    # plot the BUY and SELL actions as points
+    points = alt.Chart(df).transform_filter(
+        alt.datum.action != 'HOLD'
+    ).mark_point(
+        filled=True
+    ).encode(
+        x=alt.X('date:T', axis=alt.Axis(title='Date')),
+        y=alt.Y('position', axis=alt.Axis(format='$.2f', title='Price'), scale=scale),
+        color='action'
+    ).interactive(bind_y=False)
+
+    # merge the two charts
+    chart = alt.layer(actual, points, title=title).properties(height=300, width=1000)
+    
+    return chart
+
 
 def predict_prices(stock_name):
-    stock_name = stock_name.upper()
+    stock_name = stock_name
     end = datetime.datetime.today()
     start = datetime.date(end.year - 2, 1, 1)
     df = web.DataReader(stock_name+".NS", 'yahoo', start, end)
@@ -241,10 +283,9 @@ def predict_prices(stock_name):
 
     # Read the csv file
     df = pd.read_csv(stock_name+'_prices.csv', date_parser=True)
-
+    df_copy = df
     df = df[['Open', 'High', 'Low', 'Close']]
     df.dropna(inplace=True)
-    df_copy = df.copy()
 
     stock_open = df['Open']
     stock_high = df['High']
@@ -401,7 +442,71 @@ def predict_prices(stock_name):
     y_hat_gbr = [float(i) for i in np.reshape(y_hat_gbr, (y_hat_gbr.shape[0]))]
     # print(y_test.shape, y_testLSTM.shape, y_hatLSTM.shape, y_hat_gbr.shape)
 
-    return y_test, y_testLSTM, y_hatLSTM[1:], y_hat_lin[1:], y_hat_poly[1:], y_hat_rbf[1:], y_hat_rfr[1:], y_hat_gbr[1:]
+    test_wdate = df_copy['Date'][-test_size - 1:]
+    test_wdate = pd.to_datetime(test_wdate, infer_datetime_format=True)
+    test_wdate = pd.DataFrame(data= test_wdate.tolist(), columns=['Date'], index=list(range(test_size + 1)))
+
+
+
+    lstm_pred = pd.DataFrame(data= y_hatLSTM, columns=['Adj Close'])
+    lstm_pred = pd.merge(lstm_pred, test_wdate, left_index=True, right_index=True, how='outer')
+
+    svrLin_pred = pd.DataFrame(data= y_hat_lin, columns=['Adj Close'])
+    svrLin_pred = pd.merge(svrLin_pred, test_wdate, left_index=True, right_index=True, how='outer')
+
+    svrPoly_pred = pd.DataFrame(data= y_hat_poly, columns=['Adj Close'])
+    svrPoly_pred = pd.merge(svrPoly_pred, test_wdate, left_index=True, right_index=True, how='outer')
+
+    svrRbf_pred = pd.DataFrame(data= y_hat_rbf, columns=['Adj Close'])
+    svrRbf_pred = pd.merge(svrRbf_pred, test_wdate, left_index=True, right_index=True, how='outer')
+
+    rfr_pred = pd.DataFrame(data= y_hat_rfr, columns=['Adj Close'])
+    rfr_pred = pd.merge(rfr_pred, test_wdate, left_index=True, right_index=True, how='outer')
+
+    gbr_pred = pd.DataFrame(data= y_hat_gbr, columns=['Adj Close'])
+    gbr_pred = pd.merge(gbr_pred, test_wdate, left_index=True, right_index=True, how='outer')
+
+    os.chdir("C:\\Users\\ethan\\Projects\\growmore_analytics_flask\\src\\trading_bot\\data")
+
+    lstm_pred.to_csv(stock_name+'_LSTM.csv')
+    svrLin_pred.to_csv(stock_name+'_SVR_Lin.csv')
+    svrPoly_pred.to_csv(stock_name+'_SVR_Poly.csv')
+    svrRbf_pred.to_csv(stock_name+'_SVR_Rbf.csv')
+    rfr_pred.to_csv(stock_name+'_RFR.csv')
+    gbr_pred.to_csv(stock_name+'_GBR.csv')
+
+    plots = [None] * 6
+    index = 0
+    for model in ['LSTM', 'SVR_Lin', 'SVR_Poly', 'SVR_Rbf', 'RFR', 'GBR']:
+
+        model_name = 'model_double-dqn_GOOG_50'
+        test_stock = '/trading_bot/data/'+stock_name+'_'+model+'.csv'
+        window_size = 10
+        debug = True
+
+        agent = Agent(window_size, pretrained=True, model_name=model_name)
+
+        df = pd.read_csv(test_stock)
+        df = df[['Date', 'Adj Close']]
+        df = df.rename(columns={'Adj Close': 'actual', 'Date': 'date'})
+        dates = df['date']
+        dates = pd.to_datetime(dates, infer_datetime_format=True)
+        df['date'] = dates
+
+        switch_k_backend_device()
+
+        test_data = get_stock_data(test_stock)
+        initial_offset = test_data[1] - test_data[0]
+
+        test_result, history = evaluate_model(agent, test_data, window_size, debug)
+        show_eval_result(model_name, test_result, initial_offset)
+
+        chart = visualize(df, history, title=model)
+        plots[index] = chart.to_json()
+        index += 1
+
+
+    return y_test, y_testLSTM, y_hatLSTM[1:], y_hat_lin[1:], y_hat_poly[1:], y_hat_rbf[1:], y_hat_rfr[1:], y_hat_gbr[1:], plots[0], plots[1], plots[2], plots[3], plots[4], plots[5]
 
     # MSE_rbf = mean_squared_error(y_hat_rbf, y_test)
     # MSE_poly = mean_squared_error(y_hat_poly, y_test)

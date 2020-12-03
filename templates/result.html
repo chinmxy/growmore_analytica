@@ -48,6 +48,30 @@
     <div id="gbr" class="card mb-2 inv">
         <canvas id="myChart6"></canvas>
     </div>
+
+
+    <div>
+        <div id="lstm_trade" class="card mb-2 inv"></div>
+    </div>
+    <div>
+        <div id="svr_lin_trade" class="card mb-2 inv"></div>
+    </div>
+    <div>
+        <div id="svr_poly_trade" class="card mb-2 inv"></div>
+    </div>
+    <div>
+        <div id="svr_rbf_trade" class="card mb-2 inv"></div>
+    </div>
+    <div>
+        <div id="rfr_trade" class="card mb-2 inv"></div>
+    </div>
+    <div>
+        <div id="gbr_trade" class="card mb-2 inv"></div>
+    </div>
+    <!-- Placeholder for the tooltip -->
+    <div>
+        <div id="vis-tooltip" class="vg-tooltip"></div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script>
@@ -231,13 +255,41 @@
     .addEventListener('change', function () {
         'use strict';
         var vis = document.querySelector('.vis'),   
-        target = document.getElementById(this.value);
+        target1 = document.getElementById(this.value);
+        target2 = document.getElementById(this.value+ "_trade");
         if (vis !== null) {
         vis.className = 'inv';
         }
-        if (target !== null ) {
-        target.className = 'vis';
+        if (target1 !== null ) {
+            target1.className = 'vis';
+        }
+        if (target2 !== null) {
+            target2.className = 'vis';
         }
     });
+
+    function parse(url, div) {
+    var opt = { mode: "vega-lite",
+        renderer: "svg",
+        actions: { export: true, source: false, editor: false }
+        };
+    vegaEmbed("#" + div, url, opt, function (error, result) {
+    vegaTooltip.vegaLite(result.view, url);
+    });
+    }
+    //Parse your Json variable here
+    parse(data.trade_lstm, "lstm_trade")
+    parse(data.trade_lin, "svr_lin_trade")
+    parse(data.trade_poly, "svr_poly_trade")
+    parse(data.trade_rbf, "svr_rbf_trade")
+    parse(data.trade_rfr, "rfr_trade")
+    parse(data.trade_gbr, "gbr_trade")
+
 </script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-tooltip@0.16.0/build/vega-tooltip.min.js"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega@4"></script><script src="https://cdn.jsdelivr.net/npm/vega-lite@3.0.0-rc12"></script><script src="https://cdn.jsdelivr.net/npm/vega-embed@3"></script><script src="https://vega.github.io/datalib/datalib.min.js"></script>
 {% endblock%}
