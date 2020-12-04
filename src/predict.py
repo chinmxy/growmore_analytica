@@ -27,9 +27,11 @@ from .trading_bot.trading_bot.methods import evaluate_model
 
 
 
-path_agent_data = "C:\\Users\\ethan\\Projects\\growmore_analytics_flask\\src\\trading_bot\\data"
-path_home_dir = "C:\\Users\\ethan\\Projects\\growmore_analytics_flask"
+# path_agent_data = "C:\\Users\\ethan\\Projects\\growmore_analytics_flask\\src\\trading_bot\\data"
+# path_home_dir = "C:\\Users\\ethan\\Projects\\growmore_analytics_flask"
 
+path_agent_data = "C:\\Personal\\Projects\\growmore_analytica\\src\\trading_bot\\data"
+path_home_dir = "C:\\Personal\\Projects\\growmore_analytica"
 
 def directional_asymmetry(y_hat, y_test):
   next_real = pd.Series(np.reshape(y_test, (y_test.shape[0]))).shift(-1)
@@ -319,7 +321,8 @@ def getChart(stock, model):
 
     test_result, history = evaluate_model(agent, test_data, window_size, debug)
     show_eval_result(model_name, test_result, initial_offset)
-
+    print(history)
+    print(test_result)
 
     chart = visualize(df, history, title=model)
     return chart.to_json()
