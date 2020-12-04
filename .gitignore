@@ -1,2 +1,4 @@
 *.pyc
 __pychache__/
+src/trading_bot/trading_bot/data
+*.csv

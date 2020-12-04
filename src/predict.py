@@ -25,6 +25,12 @@ from .trading_bot.trading_bot.agent import Agent
 from .trading_bot.trading_bot.utils import show_eval_result, switch_k_backend_device, get_stock_data
 from .trading_bot.trading_bot.methods import evaluate_model
 
+
+
+path_agent_data = "C:\\Users\\ethan\\Projects\\growmore_analytics_flask\\src\\trading_bot\\data"
+path_home_dir = "C:\\Users\\ethan\\Projects\\growmore_analytics_flask"
+
+
 def directional_asymmetry(y_hat, y_test):
   next_real = pd.Series(np.reshape(y_test, (y_test.shape[0]))).shift(-1)
   next_pred = pd.Series(np.reshape(y_hat, (y_hat.shape[0]))).shift(-1)
@@ -251,13 +257,14 @@ def visualize(df, history, title="trading session"):
     # specify y-axis scale for stock prices
     scale = alt.Scale(domain=(min(min(df['actual']), min(df['position'])) - 50, max(max(df['actual']), max(df['position'])) + 50), clamp=True)
     
+
     # plot a line chart for stock positions
     actual = alt.Chart(df).mark_line(
         color='green',
         opacity=0.5
     ).encode(
         x='date:T',
-        y=alt.Y('position', axis=alt.Axis(format='₹.2f', title='Price'), scale=scale)
+        y=alt.Y('position', axis=alt.Axis(format='.2f', title='Price (₹)'), scale=scale)
     ).interactive(
         bind_y=False
     )
@@ -269,12 +276,13 @@ def visualize(df, history, title="trading session"):
         filled=True
     ).encode(
         x=alt.X('date:T', axis=alt.Axis(title='Date')),
-        y=alt.Y('position', axis=alt.Axis(format='₹.2f', title='Price'), scale=scale),
+        y=alt.Y('position', axis=alt.Axis(format='.2f', title='Price (₹)'), scale=scale),
         color='action'
     ).interactive(bind_y=False)
 
     # merge the two charts
     chart = alt.layer(actual, points, title=title).properties(height=300, width=1000)
+    
     return chart
     
 
@@ -288,9 +296,9 @@ def visualize(df, history, title="trading session"):
 
 
 def getChart(stock, model):
-    os.chdir("C:\\Users\\ethan\\Projects\\growmore_analytics_flask\\src\\trading_bot\\data")
+    os.chdir(path_agent_data)
 
-    model_name = 'model_t-dqn_GOOG_10'
+    model_name = 'model_double-dqn_GOOG_50'
     test_stock = stock+'_'+model+'.csv'
     window_size = 10
     debug = True
@@ -312,10 +320,9 @@ def getChart(stock, model):
     test_result, history = evaluate_model(agent, test_data, window_size, debug)
     show_eval_result(model_name, test_result, initial_offset)
 
+
     chart = visualize(df, history, title=model)
     return chart.to_json()
-
-
 
 
 
@@ -333,7 +340,7 @@ def predict_prices(stock_name):
     df.to_csv(stock_name+'_prices.csv')
 
 
-    os.chdir("C:\\Users\\ethan\\Projects\\growmore_analytics_flask")
+    os.chdir(path_home_dir)
 
     # Read the csv file
     df = pd.read_csv(stock_name+'_prices.csv', date_parser=True)
@@ -520,7 +527,7 @@ def predict_prices(stock_name):
     gbr_pred = pd.DataFrame(data= y_hat_gbr, columns=['Adj Close'])
     gbr_pred = pd.merge(gbr_pred, test_wdate, left_index=True, right_index=True, how='outer')
 
-    os.chdir("C:\\Users\\ethan\\Projects\\growmore_analytics_flask\\src\\trading_bot\\data")
+    os.chdir(path_agent_data)
 
     lstm_pred.to_csv(stock_name+'_LSTM.csv')
     svrLin_pred.to_csv(stock_name+'_SVR_Lin.csv')
