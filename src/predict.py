@@ -21,9 +21,9 @@ import altair as alt
 import seaborn as sns
 import logging
 
-from trading_bot.trading_bot.agent import Agent
-from trading_bot.trading_bot.utils import show_eval_result, switch_k_backend_device, get_stock_data
-from trading_bot.trading_bot.methods import evaluate_model
+from .trading_bot.trading_bot.agent import Agent
+from .trading_bot.trading_bot.utils import show_eval_result, switch_k_backend_device, get_stock_data
+from .trading_bot.trading_bot.methods import evaluate_model
 
 def directional_asymmetry(y_hat, y_test):
   next_real = pd.Series(np.reshape(y_test, (y_test.shape[0]))).shift(-1)

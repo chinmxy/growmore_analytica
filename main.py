@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template,json
 
 from src import predict
+from src.sentiment_analysis import sentiment as st
 
 app = Flask(__name__)
 
@@ -49,5 +50,16 @@ def news():
 def about():
     return render_template("about.html")
 
+@app.route('/sentiment')
+def sentiment():
+    return render_template("sentiment.html")
+
+@app.route('/sentiment', methods=["POST"])
+def sentiment_post():
+    company_name = request.form['company-name']
+    article_length = int(request.form['article-length'])
+    # print(company_name, article_length)
+    st.calculate_mean_sentiment([company_name], article_length)
+    return "Hellew"
 
 app.run(debug=True)
