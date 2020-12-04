@@ -281,7 +281,7 @@ def visualize(df, history, title="trading session"):
     ).interactive(bind_y=False)
 
     # merge the two charts
-    chart = alt.layer(actual, points, title=title).properties(height=300, width=1000)
+    chart = alt.layer(actual, points, title='Profit: ₹ '+title).properties(height=300, width=1000)
     
     return chart
     
@@ -321,7 +321,7 @@ def getChart(stock, model):
     show_eval_result(model_name, test_result, initial_offset)
 
 
-    chart = visualize(df, history, title=model)
+    chart = visualize(df, history, title=str(test_result))
     return chart.to_json()
 
 
