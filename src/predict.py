@@ -26,7 +26,6 @@ from .trading_bot.trading_bot.utils import show_eval_result, switch_k_backend_de
 from .trading_bot.trading_bot.methods import evaluate_model
 
 
-
 # path_agent_data = "C:\\Users\\ethan\\Projects\\growmore_analytics_flask\\src\\trading_bot\\data"
 # path_home_dir = "C:\\Users\\ethan\\Projects\\growmore_analytics_flask"
 

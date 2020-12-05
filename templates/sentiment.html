@@ -1,0 +1,53 @@
+{% extends "base.html"%} {% block title%}Sentiment{% endblock%} {% block content
+%}
+<div class="container-fluid mt-3">
+	<div class="jumbotron shadow mx-4 bg-dark text-white">
+		<h1 class="display-4">Sentiment Analysis</h1>
+		<p class="lead">
+			Enter the company stock symbol for which you want to know the Sentiment
+			Analysis.
+		</p>
+		<hr />
+		<br />
+		<form method="POST">
+			<div class="row align-items-end">
+				<div class="col-5">
+					<div class="form-group">
+						<label>Company Stock Symbol</label>
+						<input
+							type="text"
+							name="company-name"
+							class="form-control"
+							id="company-name-input"
+							aria-describedby="emailHelp"
+							placeholder="eg. AAPL"
+						/>
+					</div>
+				</div>
+				<div class="col-3">
+					<div class="form-group">
+						<label>No. of articles</label>
+						<div class="input-group mb-3">
+							<input
+								type="number"
+								name="article-length"
+								class="form-control"
+								placeholder="0-100"
+								aria-describedby="basic-addon1"
+								min="0"
+								max="100"
+								oninput="validity.valid||(value='');"
+							/>
+						</div>
+					</div>
+				</div>
+				<div class="col-2 mb-3">
+					<button type="submit" class="btn btn-success">Submit</button>
+				</div>
+			</div>
+		</form>
+
+		{% block sentiment_result %} {% endblock %}
+	</div>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template,json
 
 from src import predict
+from src.sentiment_analysis import sentiment as st
 
 app = Flask(__name__)
 
@@ -43,6 +44,9 @@ def news():
 def about():
     return render_template("about.html")
 
+@app.route('/sentiment')
+def sentiment():
+    return render_template("sentiment.html")
 
 @app.route('/<stock>/<model>')
 def getChart(stock, model):
@@ -50,3 +54,14 @@ def getChart(stock, model):
     return chart
 
 app.run(debug=True, use_reloader=False)
+
+@app.route('/sentiment', methods=["POST"])
+def sentiment_post():
+    company_name = request.form['company-name']
+    article_length = int(request.form['article-length'])
+    output = st.calculate_mean_sentiment([company_name], article_length)
+    # print(output)
+    return render_template("sentiment_result.html", value=output)
+
+app.jinja_env.add_extension('jinja2.ext.do')
+app.run(debug=True)
