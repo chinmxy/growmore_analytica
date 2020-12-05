@@ -57,20 +57,27 @@ def calculate_mean_sentiment(tickers, n):
 
     news_restructured = news.to_dict('split')['data']
     news_selected_list = []
+    mean_sentiment = 0
     for i in range(n):
+        print(news_restructured[i])
+        print("\n\n")
         news_selected_list.append(news_restructured[i])
-    print(news_selected_list)
-
-    values = []
-    for ticker in tickers: 
-        dataframe = news_dict[ticker]
-        dataframe = dataframe.set_index('Ticker')
-        dataframe = dataframe.drop(columns = ['Headline'])
-        mean = round(dataframe['compound'].head(n).mean(), 2)
-        values.append(mean)
+    for i in range(n):
+        mean_sentiment += news_selected_list[i][7]
+    output['mean_sentiment'] = round(mean_sentiment, 2)
+    output['news'] = news_selected_list
+    # print(output)
+    # values = []
+    # for ticker in tickers: 
+    #     dataframe = news_dict[ticker]
+    #     dataframe = dataframe.set_index('Ticker')
+    #     dataframe = dataframe.drop(columns = ['Headline'])
+    #     mean = round(dataframe['compound'].head(n).mean(), 2)
+    #     values.append(mean)
         
-    df = pd.DataFrame(list(zip(tickers, values)), columns =['Ticker', 'Mean Sentiment']) 
-    df = df.set_index('Ticker')
-    df = df.sort_values('Mean Sentiment', ascending=False)
+    # df = pd.DataFrame(list(zip(tickers, values)), columns =['Ticker', 'Mean Sentiment']) 
+    # df = df.set_index('Ticker')
+    # df = df.sort_values('Mean Sentiment', ascending=False)
+    # print(values)
 
-calculate_mean_sentiment(["INFY"], 2)
+calculate_mean_sentiment(["AAPL"], 2)
