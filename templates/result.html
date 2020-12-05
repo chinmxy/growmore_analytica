@@ -1,77 +1,81 @@
-{% extends "index.html" %}
-
-{% block title%}Result{% endblock%} 
-
-{% block result %}
+{% extends "index.html" %} {% block title%}Result{% endblock%} {% block result
+%}
 
 <style>
-    .inv {
-        display: none;
-    }
+	.inv {
+		display: none;
+	}
 
-    .vis {
-        display: block;
-    }
+	.vis {
+		display: block;
+	}
 </style>
 
 <div class="col-md-12 mt-5">
-    {% block javascript %}
-        <script>
-            var data = {{ model_response | tojson }};
-        </script>
-    {% endblock %}
-    <h2 style="color: #fff">Stock Name: {{ model_response['company_name'] }}</h2>
-    <select id="target" class="btn btn-success">
-        <option value="">Select Model...</option>
-        <option value="lstm">LSTM</option>
-        <option value="svr_lin">SVR-Linear</option>
-        <option value="svr_poly">SVR-Polynomial</option>
-        <option value="svr_rbf">SVR-Rbf</option>
-        <option value="rfr">Random Forest Regressor</option>
-        <option value="gbr">Gradient Boosting Regressor</option>
-    <select>
-    <div id="lstm" class="card mb-2 inv">
-        <canvas id="myChart1"></canvas>
-    </div>
-    <div id="svr_lin" class="card mb-2 inv">
-        <canvas id="myChart2"></canvas>
-    </div>
-    <div id="svr_poly" class="card mb-2 inv">
-        <canvas id="myChart3"></canvas>
-    </div>
-    <div id="svr_rbf" class="card mb-2 inv">
-        <canvas id="myChart4"></canvas>
-    </div>
-    <div id="rfr" class="card mb-2 inv">
-        <canvas id="myChart5"></canvas>
-    </div>
-    <div id="gbr" class="card mb-2 inv">
-        <canvas id="myChart6"></canvas>
-    </div>
+	{% block javascript %}
+	<script>
+		var data = {{ model_response | tojson }};
+	</script>
+	{% endblock %}
+	<h2 style="color: #fff">Stock Name: {{ model_response['company_name'] }}</h2>
+	<select id="target" class="btn btn-success">
+		<option value="">Select Model...</option>
+		<option value="lstm">LSTM</option>
+		<option value="svr_lin">SVR-Linear</option>
+		<option value="svr_poly">SVR-Polynomial</option>
+		<option value="svr_rbf">SVR-Rbf</option>
+		<option value="rfr">Random Forest Regressor</option>
+		<option value="gbr">Gradient Boosting Regressor</option>
+	</select>
+	<br />
+	<br />
+	<h3>Stock Price Prediction</h3>
+	<div id="lstm" class="card mb-2 inv">
+		<canvas id="myChart1"></canvas>
+	</div>
+	<div id="svr_lin" class="card mb-2 inv">
+		<canvas id="myChart2"></canvas>
+	</div>
+	<div id="svr_poly" class="card mb-2 inv">
+		<canvas id="myChart3"></canvas>
+	</div>
+	<div id="svr_rbf" class="card mb-2 inv">
+		<canvas id="myChart4"></canvas>
+	</div>
+	<div id="rfr" class="card mb-2 inv">
+		<canvas id="myChart5"></canvas>
+	</div>
+	<div id="gbr" class="card mb-2 inv">
+		<canvas id="myChart6"></canvas>
+	</div>
 
-
-    <div>
-        <div id="lstm_trade" class="card mb-2 inv"></div>
-    </div>
-    <div>
-        <div id="svr_lin_trade" class="card mb-2 inv"></div>
-    </div>
-    <div>
-        <div id="svr_poly_trade" class="card mb-2 inv"></div>
-    </div>
-    <div>
-        <div id="svr_rbf_trade" class="card mb-2 inv"></div>
-    </div>
-    <div>
-        <div id="rfr_trade" class="card mb-2 inv"></div>
-    </div>
-    <div>
-        <div id="gbr_trade" class="card mb-2 inv"></div>
-    </div>
-    <!-- Placeholder for the tooltip -->
-    <div>
-        <div id="vis-tooltip" class="vg-tooltip"></div>
-    </div>
+	<br />
+	<hr />
+	<br />
+	<h3>Suggested Trading Strategy</h3>
+	<br />
+	<div>
+		<div id="lstm_trade" class="card mb-2 inv"></div>
+	</div>
+	<div>
+		<div id="svr_lin_trade" class="card mb-2 inv"></div>
+	</div>
+	<div>
+		<div id="svr_poly_trade" class="card mb-2 inv"></div>
+	</div>
+	<div>
+		<div id="svr_rbf_trade" class="card mb-2 inv"></div>
+	</div>
+	<div>
+		<div id="rfr_trade" class="card mb-2 inv"></div>
+	</div>
+	<div>
+		<div id="gbr_trade" class="card mb-2 inv"></div>
+	</div>
+	<!-- Placeholder for the tooltip -->
+	<div>
+		<div id="vis-tooltip" class="vg-tooltip"></div>
+	</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -82,215 +86,217 @@
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@4.17.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.12.2"></script>
 <script>
-    var ctx1 = document.getElementById('myChart1').getContext('2d');
-    var chart1 = new Chart(ctx1, {
-        // The type of chart we want to create
-        type: 'line',
+	var ctx1 = document.getElementById("myChart1").getContext("2d");
+	var chart1 = new Chart(ctx1, {
+		// The type of chart we want to create
+		type: "line",
 
-        // The data for our dataset
-        data: {
-            labels: data.label,
-            datasets: [{
-                label: "Real values",
-                borderColor: 'rgb(102, 185, 51)',
-                data: data.real_valuesLSTM,
-                lineTension: 0,
-                fill: false
-            },
-            {
-                label: "Predicted Values",
-                borderColor: 'rgb(51, 133, 255)',
-                data: data.predicted_valuesLSTM,
-                lineTension: 0,
-                fill: false
-            }
-            ]
-        },
+		// The data for our dataset
+		data: {
+			labels: data.label,
+			datasets: [
+				{
+					label: "Real values",
+					borderColor: "rgb(102, 185, 51)",
+					data: data.real_valuesLSTM,
+					lineTension: 0,
+					fill: false,
+				},
+				{
+					label: "Predicted Values",
+					borderColor: "rgb(51, 133, 255)",
+					data: data.predicted_valuesLSTM,
+					lineTension: 0,
+					fill: false,
+				},
+			],
+		},
 
-        // Configuration options go here
-        options: {}
-    });
+		// Configuration options go here
+		options: {},
+	});
 
-    var ctx2 = document.getElementById('myChart2').getContext('2d');
-    var chart2 = new Chart(ctx2, {
-        // The type of chart we want to create
-        type: 'line',
+	var ctx2 = document.getElementById("myChart2").getContext("2d");
+	var chart2 = new Chart(ctx2, {
+		// The type of chart we want to create
+		type: "line",
 
-        // The data for our dataset
-        data: {
-            labels: data.label,
-            datasets: [{
-                label: "Real values",
-                borderColor: 'rgb(102, 185, 51)',
-                data: data.real_valuesML,
-                lineTension: 0,
-                fill: false
-            },
-            {
-                label: "Predicted Values",
-                borderColor: 'rgb(51, 133, 255)',
-                data: data.predicted_valuesSVR_Lin,
-                lineTension: 0,
-                fill: false
-            }
-            ]
-        },
+		// The data for our dataset
+		data: {
+			labels: data.label,
+			datasets: [
+				{
+					label: "Real values",
+					borderColor: "rgb(102, 185, 51)",
+					data: data.real_valuesML,
+					lineTension: 0,
+					fill: false,
+				},
+				{
+					label: "Predicted Values",
+					borderColor: "rgb(51, 133, 255)",
+					data: data.predicted_valuesSVR_Lin,
+					lineTension: 0,
+					fill: false,
+				},
+			],
+		},
 
-        // Configuration options go here
-        options: {}
-    });
+		// Configuration options go here
+		options: {},
+	});
 
-    var ctx3 = document.getElementById('myChart3').getContext('2d');
-    var chart3 = new Chart(ctx3, {
-        // The type of chart we want to create
-        type: 'line',
+	var ctx3 = document.getElementById("myChart3").getContext("2d");
+	var chart3 = new Chart(ctx3, {
+		// The type of chart we want to create
+		type: "line",
 
-        // The data for our dataset
-        data: {
-            labels: data.label,
-            datasets: [{
-                label: "Real values",
-                borderColor: 'rgb(102, 185, 51)',
-                data: data.real_valuesML,
-                lineTension: 0,
-                fill: false
-            },
-            {
-                label: "Predicted Values",
-                borderColor: 'rgb(51, 133, 255)',
-                data: data.predicted_valuesSVR_Poly,
-                lineTension: 0,
-                fill: false
-            }
-            ]
-        },
+		// The data for our dataset
+		data: {
+			labels: data.label,
+			datasets: [
+				{
+					label: "Real values",
+					borderColor: "rgb(102, 185, 51)",
+					data: data.real_valuesML,
+					lineTension: 0,
+					fill: false,
+				},
+				{
+					label: "Predicted Values",
+					borderColor: "rgb(51, 133, 255)",
+					data: data.predicted_valuesSVR_Poly,
+					lineTension: 0,
+					fill: false,
+				},
+			],
+		},
 
-        // Configuration options go here
-        options: {}
-    });
+		// Configuration options go here
+		options: {},
+	});
 
-    var ctx4 = document.getElementById('myChart4').getContext('2d');
-    var chart4 = new Chart(ctx4, {
-        // The type of chart we want to create
-        type: 'line',
+	var ctx4 = document.getElementById("myChart4").getContext("2d");
+	var chart4 = new Chart(ctx4, {
+		// The type of chart we want to create
+		type: "line",
 
-        // The data for our dataset
-        data: {
-            labels: data.label,
-            datasets: [{
-                label: "Real values",
-                borderColor: 'rgb(102, 185, 51)',
-                data: data.real_valuesML,
-                lineTension: 0,
-                fill: false
-            },
-            {
-                label: "Predicted Values",
-                borderColor: 'rgb(51, 133, 255)',
-                data: data.predicted_valuesSVR_Rbf,
-                lineTension: 0,
-                fill: false
-            }
-            ]
-        },
+		// The data for our dataset
+		data: {
+			labels: data.label,
+			datasets: [
+				{
+					label: "Real values",
+					borderColor: "rgb(102, 185, 51)",
+					data: data.real_valuesML,
+					lineTension: 0,
+					fill: false,
+				},
+				{
+					label: "Predicted Values",
+					borderColor: "rgb(51, 133, 255)",
+					data: data.predicted_valuesSVR_Rbf,
+					lineTension: 0,
+					fill: false,
+				},
+			],
+		},
 
-        // Configuration options go here
-        options: {}
-    });
+		// Configuration options go here
+		options: {},
+	});
 
-    var ctx5 = document.getElementById('myChart5').getContext('2d');
-    var chart5 = new Chart(ctx5, {
-        // The type of chart we want to create
-        type: 'line',
+	var ctx5 = document.getElementById("myChart5").getContext("2d");
+	var chart5 = new Chart(ctx5, {
+		// The type of chart we want to create
+		type: "line",
 
-        // The data for our dataset
-        data: {
-            labels: data.label,
-            datasets: [{
-                label: "Real values",
-                borderColor: 'rgb(102, 185, 51)',
-                data: data.real_valuesML,
-                lineTension: 0,
-                fill: false
-            },
-            {
-                label: "Predicted Values",
-                borderColor: 'rgb(51, 133, 255)',
-                data: data.predicted_valuesRFR,
-                lineTension: 0,
-                fill: false
-            }
-            ]
-        },
+		// The data for our dataset
+		data: {
+			labels: data.label,
+			datasets: [
+				{
+					label: "Real values",
+					borderColor: "rgb(102, 185, 51)",
+					data: data.real_valuesML,
+					lineTension: 0,
+					fill: false,
+				},
+				{
+					label: "Predicted Values",
+					borderColor: "rgb(51, 133, 255)",
+					data: data.predicted_valuesRFR,
+					lineTension: 0,
+					fill: false,
+				},
+			],
+		},
 
-        // Configuration options go here
-        options: {}
-    });
+		// Configuration options go here
+		options: {},
+	});
 
-    var ctx6 = document.getElementById('myChart6').getContext('2d');
-    var chart6 = new Chart(ctx6, {
-        // The type of chart we want to create
-        type: 'line',
+	var ctx6 = document.getElementById("myChart6").getContext("2d");
+	var chart6 = new Chart(ctx6, {
+		// The type of chart we want to create
+		type: "line",
 
-        // The data for our dataset
-        data: {
-            labels: data.label,
-            datasets: [{
-                label: "Real values",
-                borderColor: 'rgb(102, 185, 51)',
-                data: data.real_valuesML,
-                lineTension: 0,
-                fill: false
-            },
-            {
-                label: "Predicted Values",
-                borderColor: 'rgb(51, 133, 255)',
-                data: data.predicted_valuesGBR,
-                lineTension: 0,
-                fill: false
-            }
-            ]
-        },
+		// The data for our dataset
+		data: {
+			labels: data.label,
+			datasets: [
+				{
+					label: "Real values",
+					borderColor: "rgb(102, 185, 51)",
+					data: data.real_valuesML,
+					lineTension: 0,
+					fill: false,
+				},
+				{
+					label: "Predicted Values",
+					borderColor: "rgb(51, 133, 255)",
+					data: data.predicted_valuesGBR,
+					lineTension: 0,
+					fill: false,
+				},
+			],
+		},
 
-        // Configuration options go here
-        options: {}
-    });
+		// Configuration options go here
+		options: {},
+	});
 
+	document.getElementById("target").addEventListener("change", function () {
+		"use strict";
+		var vis = document.querySelectorAll(".vis"),
+			target1 = document.getElementById(this.value),
+			target2 = document.getElementById(this.value + "_trade");
+		if (vis !== null) {
+			vis.forEach(curr => (curr.className = "inv"));
+		}
+		if (target1 !== null) {
+			target1.className = "vis";
+			target2.className = "vis";
+		}
+	});
 
-    document
-    .getElementById('target')
-    .addEventListener('change', function () {
-        'use strict';
-        var vis = document.querySelectorAll('.vis'),   
-        target1 = document.getElementById(this.value),
-        target2 = document.getElementById(this.value+ "_trade")
-        if (vis !== null) {
-            vis.forEach(curr => curr.className = 'inv');
-        }
-        if (target1 !== null ) {
-            target1.className = 'vis';
-            target2.className = 'vis';
-        }
-    });
-
-    function parse(url, div) {
-        var opt = {
-          mode: "vega-lite",
-          renderer: "svg",
-          actions: {export: true, source: false, editor: false}
-        };
-        vegaEmbed("#" + div, url, opt, function(error, result) {
-          // result.view is the Vega View, url is the original Vega-Lite specification
-          vegaTooltip.vegaLite(result.view, url);
-        });
-    }
-    //Parse your Json variable here
-    parse("/"+data.company_name+"/LSTM", "lstm_trade")
-    parse("/"+data.company_name+"/SVR_Lin", "svr_lin_trade")
-    parse("/"+data.company_name+"/SVR_Poly", "svr_poly_trade")
-    parse("/"+data.company_name+"/SVR_Rbf", "svr_rbf_trade")
-    parse("/"+data.company_name+"/RFR", "rfr_trade")
-    parse("/"+data.company_name+"/GBR", "gbr_trade")
-
+	function parse(url, div) {
+		var opt = {
+			mode: "vega-lite",
+			renderer: "svg",
+			actions: { export: true, source: false, editor: false },
+		};
+		vegaEmbed("#" + div, url, opt, function (error, result) {
+			// result.view is the Vega View, url is the original Vega-Lite specification
+			vegaTooltip.vegaLite(result.view, url);
+		});
+	}
+	//Parse your Json variable here
+	parse("/" + data.company_name + "/LSTM", "lstm_trade");
+	parse("/" + data.company_name + "/SVR_Lin", "svr_lin_trade");
+	parse("/" + data.company_name + "/SVR_Poly", "svr_poly_trade");
+	parse("/" + data.company_name + "/SVR_Rbf", "svr_rbf_trade");
+	parse("/" + data.company_name + "/RFR", "rfr_trade");
+	parse("/" + data.company_name + "/GBR", "gbr_trade");
 </script>
 {% endblock%}
