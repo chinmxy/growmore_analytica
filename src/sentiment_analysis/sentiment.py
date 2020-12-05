@@ -1,4 +1,3 @@
-# Import libraries
 import pandas as pd
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
@@ -6,10 +5,8 @@ from urllib.request import urlopen, Request
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def calculate_mean_sentiment(tickers, n):
-    # Declare Output Dictionary
     output = {}
-    
-    # Get Data
+   
     finwiz_url = 'https://finviz.com/quote.ashx?t='
     news_tables = {}
 
@@ -36,7 +33,6 @@ def calculate_mean_sentiment(tickers, n):
                 time = date_scrape[1]
 
             ticker = file_name.split('_')[0]
-            
             parsed_news.append([ticker, date, time, text])
       
     # Sentiment Analysis
@@ -59,25 +55,11 @@ def calculate_mean_sentiment(tickers, n):
     news_selected_list = []
     mean_sentiment = 0
     for i in range(n):
-        print(news_restructured[i])
-        print("\n\n")
         news_selected_list.append(news_restructured[i])
     for i in range(n):
         mean_sentiment += news_selected_list[i][7]
-    output['mean_sentiment'] = round(mean_sentiment, 2)
+    #generate output dictionary
+    output['mean_sentiment'] = round(mean_sentiment/n, 2)
     output['news'] = news_selected_list
-    # print(output)
-    # values = []
-    # for ticker in tickers: 
-    #     dataframe = news_dict[ticker]
-    #     dataframe = dataframe.set_index('Ticker')
-    #     dataframe = dataframe.drop(columns = ['Headline'])
-    #     mean = round(dataframe['compound'].head(n).mean(), 2)
-    #     values.append(mean)
-        
-    # df = pd.DataFrame(list(zip(tickers, values)), columns =['Ticker', 'Mean Sentiment']) 
-    # df = df.set_index('Ticker')
-    # df = df.sort_values('Mean Sentiment', ascending=False)
-    # print(values)
-
-calculate_mean_sentiment(["AAPL"], 2)
+    return output
+    

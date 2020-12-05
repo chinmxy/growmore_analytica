@@ -1,0 +1,34 @@
+{% extends "sentiment.html" %} {% block title%}Sentiment Result {% endblock%}
+{%block sentiment_result %}
+<br />
+<hr style="border-top: 1px solid white" />
+<br />
+<p class="lead">
+	Mean sentiment of
+	<span class="font-weight-bold">{{value['news'][0][0]}}</span> is
+	<span class="font-weight-bold">{{value['mean_sentiment']}}</span>.
+</p>
+<br />
+<table class="table table-striped table-dark">
+	<thead>
+		<tr>
+			<th scope="col">Sr.</th>
+			<th scope="col">Date</th>
+			<th scope="col">Time</th>
+			<th scope="col">News</th>
+			<th scope="col">Sentiment value</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for i in range(value['news'] | length)%}
+		<tr>
+			<th scope="row">{{i+1}}</th>
+			<td>{{value['news'][i][1]}}</td>
+			<td>{{value['news'][i][2]}}</td>
+			<td>{{value['news'][i][3]}}</td>
+			<td>{{value['news'][i][7]}}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock%}

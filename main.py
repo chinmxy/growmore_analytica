@@ -59,7 +59,9 @@ def sentiment_post():
     company_name = request.form['company-name']
     article_length = int(request.form['article-length'])
     # print(company_name, article_length)
-    st.calculate_mean_sentiment([company_name], article_length)
-    return "Hellew"
+    output = st.calculate_mean_sentiment([company_name], article_length)
+    print(output)
+    return render_template("sentiment_result.html", value=output)
 
+app.jinja_env.add_extension('jinja2.ext.do')
 app.run(debug=True)
