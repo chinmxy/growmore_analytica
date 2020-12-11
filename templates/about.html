@@ -1,11 +1,28 @@
-{% extends "base.html"%}
-
-{% block title%}About{% endblock%} 
-
-{% block content %}
-<div>
-    <h1 style="color: aliceblue; text-align: center;">
-        This is GROWMORE ANALYTICA
-    </h1>
+{% extends "base.html"%} {% block title%}About{% endblock%} {% block content %}
+<div class="container-fluid mt-3">
+	<div class="jumbotron shadow mx-4 bg-dark text-white">
+		<h1 class="display-4">About</h1>
+		<!-- <p class="lead">
+			Enter the company stock symbol for which you want to know the Sentiment
+			Analysis.
+		</p> -->
+		<hr />
+		<br />
+		<p class="lead" style="text-align: justify">
+			In the unfortunate pandemic of COVID-19, whilst stuck in our homes hoping
+			for quick control on the outbreak, we noticed a drastic decline in the
+			global economy and crashes in the stock market. Which motivated us to
+			explore the stock market and understood its widespread importance to the
+			Indian economy. We then realised how much it would benefit the Indian
+			audience if there was a software which enabled them to ease the process of
+			trading. We further realised how important it was to know the future stock
+			prices in advance. Thus originated the idea to predict the stock prices.
+			Also, we noticed that the majority of people were scared to invest in
+			trading platforms because the platforms were too complicated. So we
+			thought of creating a platform where the user would be prompted every step
+			during the trading process.
+		</p>
+	</div>
 </div>
+
 {% endblock%}

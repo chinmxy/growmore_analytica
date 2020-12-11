@@ -7,3 +7,10 @@ body {
 #header-logo-img :hover {
 	text-shadow: 0 0 3px #fff, 0 0 5px #fff;
 }
+
+footer {
+	clear: both;
+	position: relative;
+	height: 200px;
+	margin-top: -200px;
+}

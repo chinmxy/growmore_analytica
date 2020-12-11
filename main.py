@@ -53,15 +53,18 @@ def getChart(stock, model):
     chart = predict.getChart(stock, model)
     return chart
 
-app.run(debug=True, use_reloader=False)
+
 
 @app.route('/sentiment', methods=["POST"])
-def sentiment_post():
+def sentimentpost():
     company_name = request.form['company-name']
     article_length = int(request.form['article-length'])
     output = st.calculate_mean_sentiment([company_name], article_length)
     # print(output)
     return render_template("sentiment_result.html", value=output)
+
+
+app.run(debug=True, use_reloader=False)
 
 app.jinja_env.add_extension('jinja2.ext.do')
 app.run(debug=True)
