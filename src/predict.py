@@ -286,16 +286,6 @@ def visualize(df, history, title="trading session"):
     
     return chart
     
-
-
-
-
-
-
-
-
-
-
 def getChart(stock, model):
     os.chdir(path_agent_data)
 
@@ -320,17 +310,11 @@ def getChart(stock, model):
 
     test_result, history = evaluate_model(agent, test_data, window_size, debug)
     show_eval_result(model_name, test_result, initial_offset)
-    print(history)
-    print(test_result)
+    # print(history)
+    # print(test_result)
 
     chart = visualize(df, history, title=str(test_result))
     return chart.to_json()
-
-
-
-
-
-
 
 def predict_prices(stock_name):
     stock_name = stock_name

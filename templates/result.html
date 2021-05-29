@@ -52,6 +52,33 @@
 	<br />
 	<hr />
 	<br />
+	<div style="display: flex">
+		<h3>Comparison</h3>
+		<button
+			class="btn"
+			type="button"
+			data-toggle="collapse"
+			data-target="#collapseExample"
+			aria-expanded="false"
+			aria-controls="collapseExample"
+		>
+			<i class="fas fa-chevron-down" style="color: white"></i>
+		</button>
+	</div>
+
+	<br />
+
+	<div class="collapse" id="collapseExample">
+		<div class="card card-body" style="background-color: #343a40">
+			<div class="">
+				<canvas id="myChartComp"></canvas>
+			</div>
+		</div>
+	</div>
+
+	<br />
+	<hr />
+	<br />
 	<h3>Suggested Trading Strategy</h3>
 	<br />
 	<div>
@@ -85,7 +112,69 @@
 <script src="https://cdn.jsdelivr.net/npm/vega@5.17.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@4.17.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.12.2"></script>
+
 <script>
+	console.log(data);
+	//Comparison graph
+
+	var ctxComparison = document.getElementById("myChartComp").getContext("2d");
+	var chartComp = new Chart(ctxComparison, {
+		type: "bar",
+		data: {
+			labels: ["LSTM", "SVR Linear", "SVR Poly", "SVR Rbf", "RFR", "GBR"],
+			datasets: [
+				{
+					label: "% Accuracy",
+					data: data.accuracy_values,
+					backgroundColor: [
+						"rgba(75, 192, 192, 0.2)",
+						"rgba(75, 192, 192, 0.2)",
+						"rgba(75, 192, 192, 0.2)",
+						"rgba(75, 192, 192, 0.2)",
+						"rgba(75, 192, 192, 0.2)",
+						"rgba(75, 192, 192, 0.2)",
+					],
+					borderColor: [
+						"rgba(75, 192, 192, 1)",
+						"rgba(75, 192, 192, 1)",
+						"rgba(75, 192, 192, 1)",
+						"rgba(75, 192, 192, 1)",
+						"rgba(75, 192, 192, 1)",
+						"rgba(75, 192, 192, 1)",
+					],
+					borderWidth: 1,
+				},
+			],
+		},
+		options: {
+			legend: {
+				labels: {
+					fontColor: "white",
+				},
+			},
+			scales: {
+				yAxes: [
+					{
+						ticks: {
+							fontColor: "white",
+
+							beginAtZero: true,
+						},
+					},
+				],
+				xAxes: [
+					{
+						ticks: {
+							fontColor: "white",
+						},
+					},
+				],
+			},
+		},
+	});
+
+	//Comparison graph end
+
 	var ctx1 = document.getElementById("myChart1").getContext("2d");
 	var chart1 = new Chart(ctx1, {
 		// The type of chart we want to create
